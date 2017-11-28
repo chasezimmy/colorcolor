@@ -146,6 +146,12 @@ Pencil.prototype.enable = function() {
 	return this;
 };
 
+Pencil.prototype._clearCanvas = function() {
+  var canvas = this._canvasEl;
+  var context = canvas.getContext('2d');
+  context.clearRect(0, 0, canvas.width, canvas.height);
+};
+
 
 if (typeof module !== 'undefined' && module.exports) {
 	module.exports = Pencil;

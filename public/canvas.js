@@ -2,7 +2,7 @@ window.onload = function () {
 
 	var socket = io.connect();
 	var canvas = document.getElementById("myCanvas");
-	var checkScore = document.getElementById("checkScore");
+	var clear = document.getElementById("clear");
 	var scoreboard = document.getElementById("score");
 	canvas.width = 700;
 	canvas.height = 500;
@@ -50,31 +50,31 @@ window.onload = function () {
 	});
 
 
-    checkScore.onclick = function() {
+    clear.onclick = function() {
+        pencil._clearCanvas();
+        pencil._pixels = {};
+    };
+
+
+    // non-optimal way of presenting scoreboard
+    socket.on('score', function () {
         var arr = pencil._pixels;
         for (i in colorNames) {
-        	colorNames[i].score = 0;
+            colorNames[i].score = 0;
         }
 
         for (var x in arr) {
             for (var y in arr[x]) {
-            	//console.log(arr[x][y]);
-            	color = arr[x][y];
+                //console.log(arr[x][y]);
+                color = arr[x][y];
                 colorNames[color]["score"] = colorNames[color]["score"] ? colorNames[color]["score"] + 1 : 1;
             }
         }
         var temp = "";
-        //console.log(colorNames);
         for (i in colorNames) {
-        	//console.log(i, colorNames[i].name, colorNames[i].score);
-        	temp += i + ": " + colorNames[i].name + " (" + colorNames[i].score.toString() + ")\n";
+            temp += i + ": " + colorNames[i].name + " (" + colorNames[i].score.toString() + ")\n";
         }
         scoreboard.value = temp;
-        //console.log(colorNames);
-    };
-
-    socket.on('score', function () {
-    	checkScore.click();
 
     });
 
