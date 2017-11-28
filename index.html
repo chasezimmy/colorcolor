@@ -5,7 +5,7 @@
 		<script src="canvas.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
 		<style>
-			*.unselectable, #server-time {
+			*.unselectable, #server-time, textarea {
 	 			-moz-user-select: -moz-none;
 	 			-khtml-user-select: none;
 	 			-webkit-user-select: none;
@@ -27,7 +27,7 @@
 		</div>
 		<input type="button" id="checkScore">
 		<p id='server-time'></p>
-		<textarea rows='15' id="score"></textarea>
+		<textarea rows='15' id="score" disabled></textarea>
 		<script>
 			var socket = io();
 			var el = document.getElementById('server-time');
