@@ -1,13 +1,15 @@
 window.onload = function () {
 
-	var socket = io.connect();
+	//var socket = io.connect();
 	var canvas = document.getElementById("myCanvas");
 	var clear = document.getElementById("clear");
+    var playerboard = document.getElementById("join");
 	var scoreboard = document.getElementById("score");
+    var player = {};
 	canvas.width = 700;
 	canvas.height = 500;
 
-	colorArray = ['#28a745', '#dc3545', '#007bff', '#ffc107', '#ff7c00'];
+	//colorArray = ['#28a745', '#dc3545', '#007bff', '#ffc107', '#ff7c00'];
 	colorNames = {
 					"#28a745" : {
 						"name": "green",
@@ -16,7 +18,9 @@ window.onload = function () {
 					"#dc3545" : {
 						"name": "red",
 						"score": 0,
-					},
+					}
+                }
+                    /*,
 					"#007bff" : {
 						"name": "blue",
 						"score": 0,
@@ -29,17 +33,24 @@ window.onload = function () {
 						"name": "orange",
 						"score": 0,
 					},
-				}
+				}*/
 
-	randomColor = colorArray[Math.floor(Math.random() * colorArray.length)];
- 	var pencil = new Pencil(document.getElementById('myCanvas'), {
-		pixelSize: 10,
-		color: randomColor,
-		socket: socket,
+	//randomColor = colorArray[Math.floor(Math.random() * colorArray.length)];
 
-	});
+    //console.log(player);
 
-	pencil.enable();
+
+    var pencil = new Pencil(document.getElementById('myCanvas'), {
+        pixelSize: 10,
+        id: socket.id,
+        socket: socket,
+        //socket: socket,
+
+    });
+
+
+
+
 
 	socket.on('drawing', function (data) {
 		if(data) {
@@ -49,11 +60,27 @@ window.onload = function () {
 		}
 	});
 
-
     clear.onclick = function() {
+        socket.emit('clear', { player: player.color});
+    };
+
+    join.onclick = function() {
+        socket.emit('join');
+    };
+
+    socket.on('init_player', function (data) {
+        pencil._color = data[pencil._id].color;
+        pencil.enable();
+
+    });
+
+    socket.on('clearing', function (data) {
         pencil._clearCanvas();
         pencil._pixels = {};
-    };
+        alert(colorNames[data.player].name + " cleared the board");
+    });
+
+
 
 
     // non-optimal way of presenting scoreboard

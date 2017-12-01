@@ -10,6 +10,7 @@
 var Pencil = function(canvasEl, options) {
 	options = options || {};
 
+	this._id = options.id;
 	this._currentPixel = undefined;
 	this._pixelSize = options.pixelSize || 1;
 	this._color = options.color || 'black';

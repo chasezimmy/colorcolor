@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<meta name="viewport" content="width=device-width; initial-scale = 1.0; maximum-scale=1.0; user-scalable=no" />
+		<meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale=1.0, user-scalable=no" />
 		<script src="pencil.js"></script>
 		<script src="canvas.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
@@ -26,8 +26,10 @@
 			<canvas style="border: solid 1px #000;" id="myCanvas"></canvas>
 		</div>
 		<input type="button" id="clear">
+		<input type="button" id="join" value="join">
 		<p id='server-time'></p>
 		<textarea rows='15' id="score" disabled></textarea>
+		<textarea rows='15' id="" disabled></textarea>
 		<script>
 			var socket = io();
 			var el = document.getElementById('server-time');
