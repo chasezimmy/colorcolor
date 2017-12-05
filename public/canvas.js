@@ -4,7 +4,7 @@ window.onload = function () {
     /* Reset if id isn't set */
     if( socket.id == null) {
         location.reload();
-    }
+    } else {
 
 
 
@@ -135,5 +135,6 @@ window.onload = function () {
 
     });
 
+} // dont reload
 
 }
