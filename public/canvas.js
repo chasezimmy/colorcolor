@@ -18,9 +18,7 @@ window.onload = function () {
 					"#dc3545" : {
 						"name": "red",
 						"score": 0,
-					}
-                }
-                    /*,
+					},
 					"#007bff" : {
 						"name": "blue",
 						"score": 0,
@@ -33,7 +31,7 @@ window.onload = function () {
 						"name": "orange",
 						"score": 0,
 					},
-				}*/
+				}
 
 	//randomColor = colorArray[Math.floor(Math.random() * colorArray.length)];
 
@@ -69,6 +67,7 @@ window.onload = function () {
     };
 
     socket.on('init_player', function (data) {
+        console.log(data);
         pencil._color = data[pencil._id].color;
         pencil.enable();
 
@@ -92,7 +91,6 @@ window.onload = function () {
 
         for (var x in arr) {
             for (var y in arr[x]) {
-                //console.log(arr[x][y]);
                 color = arr[x][y];
                 colorNames[color]["score"] = colorNames[color]["score"] ? colorNames[color]["score"] + 1 : 1;
             }
