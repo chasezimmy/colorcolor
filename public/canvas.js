@@ -1,5 +1,14 @@
 window.onload = function () {
 
+
+    /* Reset if id isn't set */
+    if( socket.id == null) {
+        location.reload();
+    }
+
+
+
+
 	//var socket = io.connect();
 	var canvas = document.getElementById("myCanvas");
 	var clear = document.getElementById("clear");
@@ -7,11 +16,24 @@ window.onload = function () {
 	var scoreboard = document.getElementById("score");
     var notification = document.getElementById("notification");
 
+    //var username = "" || "chasezimmy";
+    var username = prompt("username", "Username");
+    var uuid = socket.id;
     var player = {};
+    
+    player[socket.id] = username;
+
 	canvas.width = 700;
 	canvas.height = 500;
 
-	//colorArray = ['#28a745', '#dc3545', '#007bff', '#ffc107', '#ff7c00'];
+    /* Initiating new players */
+    pencil = new Pencil(document.getElementById('myCanvas'), {
+        pixelSize: 10,
+        id: socket.id,
+        socket: socket,
+
+    });
+
 	colorNames = {
 					"#28a745" : {
 						"name": "green",
@@ -34,31 +56,41 @@ window.onload = function () {
 						"score": 0,
 					},
                     "#000" : {
-                        "name": "null",
+                        "name": null,
                         "score": 0,
                     }
 				}
 
-	//randomColor = colorArray[Math.floor(Math.random() * colorArray.length)];
-    console.log(socket.id);
-    if( socket.id == null) {
-        location.reload();
-    }
+    clear.onclick = function() {
+        socket.emit('clear', { color: pencil._color});
+    };
+
+    join.onclick = function() {
+        socket.emit('join', player);
+        pencil.enable();
+        join.remove();
+
+    };
 
 
-    var pencil = new Pencil(document.getElementById('myCanvas'), {
-        pixelSize: 10,
-        id: socket.id,
-        socket: socket,
-        color: '#000'
-        //socket: socket,
+
+
+
+
+
+    socket.on('init_player', function (data) {
+        //playerboard.remove();
+        console.log(data);
+        players = data.players;
+        //console.log(pencil._id);
+        pencil._color = players[pencil._id].color;
+        notification.append(players[data["joined_id"]].username + " has joined.\n");
+        //pencil.enable();
 
     });
 
 
-
-
-
+    /* Drawing logic between users */
 	socket.on('drawing', function (data) {
 		if(data) {
 			pencil.drawPixel(data);
@@ -67,23 +99,7 @@ window.onload = function () {
 		}
 	});
 
-    clear.onclick = function() {
-        socket.emit('clear', { color: pencil._color});
-    };
-
-    join.onclick = function() {
-        socket.emit('join');
-    };
-
-    socket.on('init_player', function (data) {
-        playerboard.remove();
-        console.log(data);
-        console.log(pencil._id);
-        pencil._color = data[pencil._id].color;
-        pencil.enable();
-
-    });
-
+    /* Clear canvas and pixel object */
     socket.on('clearing', function (data) {
         pencil._clearCanvas();
         pencil._pixels = {};

@@ -16,21 +16,23 @@ app.get('/', function(req, res) {
 app.use(express.static(__dirname + '/public'));
 
 const io = require('socket.io').listen(app.listen(PORT));
-var colors = ['#28a745', '#dc3545', '#007bff', '#ffc107', '#ff7c00'];
+var colors = ['#28a745', '#ff7c00', '#007bff', '#ffc107', '#dc3545'];
 
 console.log('OG: ', colors);
 
 var players = {};
 
-
 io.sockets.on('connection', (socket) => {
-    var id = socket.id;
-    players[socket.id] = {color: colors.pop()};
+
+    // init players object to index all players in current game
+    players[socket.id] = { color : colors.pop(), username : "" };
+
     console.log("JOINED: ", players[socket.id].color)
-    //io.emit('join', players);
     
     socket.on('join', function (data) {
-        io.emit('init_player', players);
+        players[socket.id].username = data[socket.id];
+        console.log(players);
+        io.emit('init_player', {players: players, "joined_id" : socket.id});
     });
 
 
