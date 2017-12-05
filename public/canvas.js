@@ -67,7 +67,7 @@ window.onload = function () {
     };
 
     socket.on('init_player', function (data) {
-        console.log(data);
+        console.log(data[pencil._id]);
         pencil._color = data[pencil._id].color;
         pencil.enable();
 
