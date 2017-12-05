@@ -25,13 +25,15 @@ var players = {};
 io.sockets.on('connection', (socket) => {
 
     // init players object to index all players in current game
-    players[socket.id] = { color : colors.pop(), username : "" };
+    console.log("JOINED: ", socket.id)
 
-    console.log("JOINED: ", players[socket.id].color)
+    players[socket.id] = { color : "", username : "" };
     
+
     socket.on('join', function (data) {
+        players[socket.id].color = colors.pop();
         players[socket.id].username = data[socket.id];
-        console.log(players);
+
         io.emit('init_player', {players: players, "joined_id" : socket.id});
     });
 
@@ -39,7 +41,7 @@ io.sockets.on('connection', (socket) => {
 
     socket.on('disconnect', function () {
         colors.push(players[socket.id].color);
-        console.log('LEFT: ', players[socket.id].color);
+        console.log('LEFT: ', socket.id);
         delete players[socket.id];
     });
     
@@ -50,6 +52,11 @@ io.sockets.on('connection', (socket) => {
     socket.on('clear', function (data) {
         io.emit('clearing', data);
     });
+
+    socket.on('reset', function (data) {
+        colors = ['#28a745', '#ff7c00', '#007bff', '#ffc107', '#dc3545'];
+        players = {};
+    })
 
 
 

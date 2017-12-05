@@ -12,6 +12,7 @@ window.onload = function () {
 	//var socket = io.connect();
 	var canvas = document.getElementById("myCanvas");
 	var clear = document.getElementById("clear");
+    var reset = document.getElementById("reset");
     var playerboard = document.getElementById("join");
 	var scoreboard = document.getElementById("score");
     var notification = document.getElementById("notification");
@@ -70,6 +71,10 @@ window.onload = function () {
         pencil.enable();
         join.remove();
 
+    };
+
+    reset.onclick = function() {
+        socket.emit('reset', player);
     };
 
 
