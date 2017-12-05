@@ -5,6 +5,8 @@ window.onload = function () {
 	var clear = document.getElementById("clear");
     var playerboard = document.getElementById("join");
 	var scoreboard = document.getElementById("score");
+    var notification = document.getElementById("notification");
+
     var player = {};
 	canvas.width = 700;
 	canvas.height = 500;
@@ -31,17 +33,24 @@ window.onload = function () {
 						"name": "orange",
 						"score": 0,
 					},
+                    "#000" : {
+                        "name": "null",
+                        "score": 0,
+                    }
 				}
 
 	//randomColor = colorArray[Math.floor(Math.random() * colorArray.length)];
-
-    //console.log(player);
+    console.log(socket.id);
+    if( socket.id == null) {
+        location.reload();
+    }
 
 
     var pencil = new Pencil(document.getElementById('myCanvas'), {
         pixelSize: 10,
         id: socket.id,
         socket: socket,
+        color: '#000'
         //socket: socket,
 
     });
@@ -59,7 +68,7 @@ window.onload = function () {
 	});
 
     clear.onclick = function() {
-        socket.emit('clear', { player: player.color});
+        socket.emit('clear', { color: pencil._color});
     };
 
     join.onclick = function() {
@@ -67,7 +76,9 @@ window.onload = function () {
     };
 
     socket.on('init_player', function (data) {
+        playerboard.remove();
         console.log(data);
+        console.log(pencil._id);
         pencil._color = data[pencil._id].color;
         pencil.enable();
 
@@ -76,7 +87,7 @@ window.onload = function () {
     socket.on('clearing', function (data) {
         pencil._clearCanvas();
         pencil._pixels = {};
-        alert(colorNames[data.player].name + " cleared the board");
+        notification.append(colorNames[data.color].name + " cleared the board.\n\n");
     });
 
 
