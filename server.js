@@ -5,60 +5,77 @@ const express = require('express');
 const path = require('path');
 
 const PORT = process.env.PORT || 3700;
-const INDEX = path.join(__dirname, 'index.html');
-
 
 const app = express();
-app.get('/', function(req, res) {
-    res.sendFile(INDEX);
-});
+const io = require('socket.io').listen(app.listen(PORT));
 
+app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 
-const io = require('socket.io').listen(app.listen(PORT));
-var colors = ['#28a745', '#ff7c00', '#007bff', '#ffc107', '#dc3545'];
 
-console.log('OG: ', colors);
+/* ROUTES */
+app.get('/', function(req, res) {
+    res.render('index', {
+        guid: ID(),
+    });
+});
 
-var players = {};
+app.get('/g/:guid', function(req, res) {
+    var guid = req.params.guid
+    res.render('game', {
+        guid: guid,
+    });
+});
+
+var rooms = {};
+var colors = [];
+
+var ID = function() {
+    return Math.random().toString(36).substr(2, 9);
+}
 
 io.sockets.on('connection', (socket) => {
 
-    // init players object to index all players in current game
-    console.log("JOINED: ", socket.id)
+    console.log("Connected: ", socket.id);
 
-    players[socket.id] = { color : "", username : "" };
-    
+    socket.on('create', function(room) {
 
-    socket.on('join', function (data) {
-        players[socket.id].color = colors.pop();
-        players[socket.id].username = data[socket.id];
+        socket.join(room);
+        console.log('Connecting ', socket.id, ' to room ', room);
 
-        io.emit('init_player', {players: players, "joined_id" : socket.id});
+        
+        if (Object.keys(io.sockets.adapter.rooms[room]['sockets']).length <= 1) {
+            rooms[room] = [];
+            colors = ['#28a745', '#ff7c00', '#007bff', '#ffc107', '#dc3545'];
+        }
+        
+        rooms[room][socket.id] = {color: '', username : '', room : ''};
+
+        var color = colors.pop();
+        rooms[room][socket.id].color = color;
+        rooms[room][socket.id].username = socket.id;
+        rooms[room][socket.id].room = room
+        io.sockets.in(socket.id).emit('init_player', rooms[room][socket.id]);
+      
     });
 
+    socket.on('draw', function (data) {
+        io.to(data.room).emit('drawing', data);
+    });
 
 
     socket.on('disconnect', function () {
-        colors.push(players[socket.id].color);
-        console.log('LEFT: ', socket.id);
-        delete players[socket.id];
-    });
-    
-    socket.on('draw', function (data) {
-        io.emit('drawing', data);
+        console.log("Disconnect: ", socket.id)
     });
 
     socket.on('clear', function (data) {
-        io.emit('clearing', data);
+        io.to(data.room).emit('clearing', data.color);
     });
 
     socket.on('reset', function (data) {
         colors = ['#28a745', '#ff7c00', '#007bff', '#ffc107', '#dc3545'];
-        players = {};
-    })
-
-
+        //delete rooms[data.room][]
+    });
 
 });
 

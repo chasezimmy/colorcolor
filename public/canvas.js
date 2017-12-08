@@ -1,12 +1,6 @@
 window.onload = function () {
 
 
-    /* Reset if id isn't set */
-    if( socket.id == null) {
-        location.reload();
-    } else {
-
-
 
 
 	//var socket = io.connect();
@@ -22,7 +16,7 @@ window.onload = function () {
     var uuid = socket.id;
     var player = {};
     
-    player[socket.id] = username;
+    player[socket.id] = {username: username, room: ''};
 
 	canvas.width = 700;
 	canvas.height = 500;
@@ -63,14 +57,7 @@ window.onload = function () {
 				}
 
     clear.onclick = function() {
-        socket.emit('clear', { color: pencil._color});
-    };
-
-    join.onclick = function() {
-        socket.emit('join', player);
-        pencil.enable();
-        join.remove();
-
+        socket.emit('clear', { color: pencil._color, room: pencil._room});
     };
 
     reset.onclick = function() {
@@ -82,17 +69,20 @@ window.onload = function () {
 
 
 
-
     socket.on('init_player', function (data) {
-        //playerboard.remove();
         console.log(data);
-        players = data.players;
-        //console.log(pencil._id);
-        pencil._color = players[pencil._id].color;
-        notification.append(players[data["joined_id"]].username + " has joined.\n");
-        //pencil.enable();
+        pencil._color = data.color;
+        pencil._room = data.room;
+        player[socket.id].room = data.room;
+        notification.append(data.username + " has joined.\n");
+        pencil.enable();
 
     });
+
+
+
+
+
 
 
     /* Drawing logic between users */
@@ -135,6 +125,5 @@ window.onload = function () {
 
     });
 
-} // dont reload
 
 }

@@ -16,6 +16,7 @@ var Pencil = function(canvasEl, options) {
 	this._color = options.color || 'black';
 	this._canvasEl = canvasEl;
 	this._socket = options.socket || 1;
+	this._room = options.room || 1;
 	this._context = canvasEl.getContext('2d');
 	this._pixels = {};
 	this._collection = [];
@@ -74,7 +75,7 @@ Pencil.prototype._onDown = function(e) {
   	this._active = false;
 
  	this._currentPixel = this._getPixelFromEvent(e);
-  	this._socket.emit('draw', { x:  this._currentPixel.x, y: this._currentPixel.y, color: this._color});
+  	this._socket.emit('draw', { x:  this._currentPixel.x, y: this._currentPixel.y, color: this._color, room: this._room});
 };
 
 Pencil.prototype._onKeyDown = function(e) {
@@ -94,7 +95,7 @@ Pencil.prototype._onMove = function(e) {
 	this._collection.push(pixel);
 	this._currentPixel = pixel;
 	
-	this._socket.emit('draw', { x:  this._currentPixel.x, y: this._currentPixel.y, color: this._color});
+	this._socket.emit('draw', { x:  this._currentPixel.x, y: this._currentPixel.y, color: this._color, room: this._room});
 };
 
 
