@@ -50,11 +50,12 @@ io.sockets.on('connection', (socket) => {
         }
         
         rooms[room][socket.id] = {color: '', username : '', room : ''};
-
+        console.log(room);
         var color = colors.pop();
         rooms[room][socket.id].color = color;
         rooms[room][socket.id].username = socket.id;
         rooms[room][socket.id].room = room
+        io.sockets.emit('notification_join', rooms[room][socket.id]);
         io.sockets.in(socket.id).emit('init_player', rooms[room][socket.id]);
       
     });
@@ -65,10 +66,12 @@ io.sockets.on('connection', (socket) => {
 
 
     socket.on('disconnect', function () {
+        io.sockets.emit('notification_disconnect', socket.id);
         console.log("Disconnect: ", socket.id)
     });
 
     socket.on('clear', function (data) {
+        io.to(data.room).emit('notification_clear', data.color);
         io.to(data.room).emit('clearing', data.color);
     });
 

@@ -7,10 +7,10 @@
         <script>
             //var socket = io('/g/'+"<%= guid %>");
             var socket = io();
+            
             function creategame () {
                 socket.emit('create', "<%= guid %>");
             }
-
         </script>
         <style>
             *.unselectable, #server-time, textarea {
@@ -30,21 +30,23 @@
         </style>
     </head>
     <body>
-        <%= guid %>
+        <p>share instance: https://serene-harbor-16791.herokuapp.com/<%= guid %></p>
+        <p id='sid'></p>
         <div id="paint">
             <canvas style="border: solid 1px #000;" id="myCanvas"></canvas>
         </div>
-        <input type="button" id="clear" value="clear">
-        <input type="button" id="reset" value="reset">
-        <input type="button" onclick="creategame('<%= guid %>')">
+        <input type="button" value="join" onclick="creategame()">
         <p id='server-time'></p>
         <textarea rows='15' id="score" disabled></textarea>
-        <textarea rows='15' id="notification" disabled></textarea>
+        <textarea style="width:50%" rows='15' id="notification" disabled></textarea>
+        <input type="button" id="clear" value="clear">
+        <input type="button" id="reset" value="reset">
         <script>
             var el = document.getElementById('server-time');
             socket.on('time', function(timeString) {
                 el.innerHTML = 'Server time: ' + timeString;
             });
+
         </script>
     </body>
 </html>

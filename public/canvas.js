@@ -29,30 +29,39 @@ window.onload = function () {
 
     });
 
+
+
+
 	colorNames = {
 					"#28a745" : {
 						"name": "green",
 						"score": 0,
+                        "username": '',
 					},
 					"#dc3545" : {
 						"name": "red",
 						"score": 0,
+                        "username": '',
 					},
 					"#007bff" : {
 						"name": "blue",
 						"score": 0,
+                        "username": '',
 					},
 					"#ffc107" : {
 						"name": "yellow",
 						"score": 0,
+                        "username": '',
 					},
 					"#ff7c00" : {
 						"name": "orange",
 						"score": 0,
+                        "username": '',
 					},
                     "#000" : {
                         "name": null,
                         "score": 0,
+                        "username": '',
                     }
 				}
 
@@ -65,22 +74,32 @@ window.onload = function () {
     };
 
 
-
+    var sid = document.getElementById('sid');
+    sid.innerHTML = "ID: " + socket.id;
 
 
 
     socket.on('init_player', function (data) {
-        console.log(data);
         pencil._color = data.color;
+        colorNames[data.color].username = username;
         pencil._room = data.room;
         player[socket.id].room = data.room;
-        notification.append(data.username + " has joined.\n");
+        
         pencil.enable();
 
     });
 
+    socket.on('notification_join', function(data) {
+        notification.append(data.username + " has joined.\n");
+    });
 
+    socket.on('notification_disconnect', function(data) {
+        notification.append(data + " has left.\n");
+    });
 
+    socket.on('notification_clear', function(data) {
+        notification.append(colorNames[data].name + " cleared the board.\n");
+    });
 
 
 
@@ -98,7 +117,6 @@ window.onload = function () {
     socket.on('clearing', function (data) {
         pencil._clearCanvas();
         pencil._pixels = {};
-        notification.append(colorNames[data.color].name + " cleared the board.\n\n");
     });
 
 
@@ -118,10 +136,20 @@ window.onload = function () {
             }
         }
         var temp = "";
+
+        var max = 0;
+        var maxColor = '';
+
         for (i in colorNames) {
-            temp += i + ": " + colorNames[i].name + " (" + colorNames[i].score.toString() + ")\n";
+            temp += i  + ": " + colorNames[i].name + " (" + colorNames[i].score.toString() + ")\n";
+
+            if (colorNames[i].score > max) {
+                max = colorNames[i].score;
+                maxColor = i; 
+            }
         }
         scoreboard.value = temp;
+        scoreboard.style.color = maxColor;
 
     });
 
