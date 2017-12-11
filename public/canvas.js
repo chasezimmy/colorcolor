@@ -1,7 +1,4 @@
 window.onload = function () {
-    console.log(socket)
-
-
 
 	//var socket = io.connect();
 	var canvas = document.getElementById("myCanvas");
@@ -84,9 +81,8 @@ window.onload = function () {
         colorNames[data.color].username = username;
         pencil._room = data['room'];
 
-        console.log(player[socket.id]['room']);
-        console.log(data['room']);
         sid.innerHTML = "ID: " + socket.id;
+        console.log(player)
         player[socket.id]['room'] = data['room'];
         
         pencil.enable();
