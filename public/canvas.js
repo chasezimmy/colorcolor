@@ -83,8 +83,8 @@ window.onload = function () {
         console.log(data);
         pencil._color = data.color;
         colorNames[data.color].username = username;
-        pencil._room = data.room;
-        player[socket.id].room = data.room;
+        pencil._room = data['room'];
+        player[socket.id].room = data['room'];
         
         pencil.enable();
 
