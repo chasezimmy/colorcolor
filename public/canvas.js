@@ -1,5 +1,5 @@
 window.onload = function () {
-
+    console.log(socket)
 
 
 
@@ -80,11 +80,11 @@ window.onload = function () {
 
 
     socket.on('init_player', function (data) {
-        console.log(data);
         pencil._color = data.color;
         colorNames[data.color].username = username;
         pencil._room = data['room'];
-        player[socket.id].room = data['room'];
+
+        player[socket.id]['room'] = data['room'];
         
         pencil.enable();
 
