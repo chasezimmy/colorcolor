@@ -83,7 +83,7 @@ window.onload = function () {
 
         sid.innerHTML = "ID: " + socket.id;
         console.log(player)
-        player[socket.id]['room'] = data['room'];
+        //player[socket.id]['room'] = data['room'];
         
         pencil.enable();
 
