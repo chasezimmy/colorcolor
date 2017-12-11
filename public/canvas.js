@@ -75,7 +75,7 @@ window.onload = function () {
 
 
     var sid = document.getElementById('sid');
-    sid.innerHTML = "ID: " + socket.id;
+
 
 
 
@@ -84,6 +84,9 @@ window.onload = function () {
         colorNames[data.color].username = username;
         pencil._room = data['room'];
 
+        console.log(player[socket.id]['room']);
+        console.log(data['room']);
+        sid.innerHTML = "ID: " + socket.id;
         player[socket.id]['room'] = data['room'];
         
         pencil.enable();
