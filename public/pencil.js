@@ -121,10 +121,10 @@ Pencil.prototype._onUp = function() {
  */
 Pencil.prototype.drawPixel = function(pxCoord) {
 	// Will not draw if pixel is out of range of canvas
-	if (pxCoord.x * this._pixelSize >= this._canvasEl.width || pxCoord.y * this._pixelSize >= this._canvasEl.height) {
+	if (pxCoord.x * this._pixelSize >= this._canvasEl.width || pxCoord.y * this._pixelSize >= this._canvasEl.height || pxCoord.x < 0 || pxCoord.y <0) {
 		return;
 	}
-	
+
 	if (!this._pixels[pxCoord.x]) this._pixels[pxCoord.x] = {};
 	this._pixels[pxCoord.x][pxCoord.y] = pxCoord.color; // color pixel
 

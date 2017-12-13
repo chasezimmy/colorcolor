@@ -4,7 +4,36 @@
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-    <a href="/g/<%=guid%>" id="create">Create</a>
-
+    <a href="/g/<%=guid%>">Create</a>
+    <hr>
+    <p>Current games</p>
+    <ul id="list"><li>Loading...</li></ul>
+    <ul>
+        <script>
+            var socket = io();
+            function test() {
+                socket.emit('gameRooms')
+            }
+            socket.on('public_rooms', function(data) {
+                var ul = document.getElementById("list");
+                ul.innerHTML = '';
+                if (data.length == 0) {
+                    var li = document.createElement("li");
+                    var text = document.createTextNode("none");
+                    li.appendChild(text);
+                    ul.appendChild(li);
+                }
+                for (i=0;i<data.length;i++) {
+                    var li = document.createElement("li");
+                    var a = document.createElement("a");
+                    a.href = "/g/"+data[i];
+                    var text = document.createTextNode(data[i]);
+                    a.appendChild(text);
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                }
+            });
+        </script>
+    </ul>
 </body>
 </html>

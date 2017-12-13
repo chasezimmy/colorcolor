@@ -1,0 +1,23 @@
+h1,h2,h3,h4,div,span,p,*.unselectable, #server-time, textarea {
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+            
+canvas {
+    cursor: crosshair;
+}
+
+body {
+    overflow-x:hidden;
+}
+
+#gameboard {
+    border: solid 1px #000;
+}
+
+#content {
+    width: 500px; height: 300px; margin: 0 0 20px 0; border: solid 1px #999; overflow-y: scroll;
+}

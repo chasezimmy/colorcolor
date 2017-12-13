@@ -1,6 +1,78 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale=1.0, user-scalable=no" />
+        
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="/custom.css">
+
+    </head>
+    <body>
+        <div class="container">
+            <h1>colorcolor:v1.0</h1><p id='server-time'></p><p id='sid'></p>
+            <canvas id="gameboard"></canvas> 
+
+            <textarea rows='25' id="score" disabled></textarea>
+            <textarea style="width:100%" rows='10' id="notification" disabled></textarea>
+            <br>
+            <h2>Chat</h2>
+            <div style="" id="content"></div>
+            <div class="controls">
+                <br>
+                <div class="input-group" style="width:350px">
+                    <input class="form-control"  id="field">
+                    <span class="input-group-btn">
+                        <input class="btn btn-primary" id="send" type="button" value="send">
+                    </span>
+                </div>
+            </div>
+            <hr>
+            <button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#myModal">admin</button>
+        </div>
+
+
+
+
+
+<!-- Join Game Modal -->
+<div class="modal fade" id="modal_save" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Enter Username</h4>
+      </div>
+      <div class="modal-body">
+        <label>Username</label>
+        <input class="form-control" placeholder="username" id="username" style="width:350px;">
+      </div>
+      <div class="modal-footer">
+        <input type="button" id="save_username" class="btn btn-primary" value="Save" onclick="joinRoom('<%= guid %>')">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Admin</h4>
+      </div>
+      <div class="modal-body">
+            <input class="btn btn-danger" type="button" id="clear" value="clear">
+            <input class="btn btn-danger" type="button" id="reset" value="reset">
+            <p><a href="https://serene-harbor-16791.herokuapp.com/<%= guid %>">share</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
         <script src="/canvas.js"></script>
         <script src="/pencil.js"></script>
         <script src="/socket.io/socket.io.js"></script>
@@ -8,40 +80,13 @@
             //var socket = io('/g/'+"<%= guid %>");
             var socket = io();
             
-            function creategame () {
-                socket.emit('create', "<%= guid %>");
-            }
-        </script>
-        <style>
-            *.unselectable, #server-time, textarea {
-                -moz-user-select: -moz-none;
-                -khtml-user-select: none;
-                -webkit-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
-            }
-            
-            canvas {
-                cursor: crosshair;
-            }
-            body {
-                overflow-x:hidden;
-            }
-        </style>
-    </head>
-    <body>
-        <p>share instance: https://serene-harbor-16791.herokuapp.com/<%= guid %></p>
 
-        <div id="paint">
-            <canvas style="border: solid 1px #000;" id="myCanvas"></canvas>
-        </div>
-        <input type="button" value="join" onclick="creategame()">
-        <p id='server-time'></p>
-        <p id='sid'></p>
-        <textarea rows='15' id="score" disabled></textarea>
-        <textarea style="width:50%" rows='15' id="notification" disabled></textarea>
-        <input type="button" id="clear" value="clear">
-        <input type="button" id="reset" value="reset">
+
+        </script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
         <script>
             var el = document.getElementById('server-time');
             socket.on('time', function(timeString) {

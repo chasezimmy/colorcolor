@@ -1,33 +1,49 @@
+function joinRoom (guid) {
+    var username = document.getElementById("username").value;
+    if (!username.length) {
+        return;
+    } 
+    socket.emit('joinRoom', {room : guid, username: username});
+}
+
+
+
 window.onload = function () {
 
+    // show modal onload
+    $("#modal_save").modal('show');
+    var modal_save = document.getElementById("modal_save")
+
 	//var socket = io.connect();
-	var canvas = document.getElementById("myCanvas");
+	var gameboard = document.getElementById("gameboard");
 	var clear = document.getElementById("clear");
     var reset = document.getElementById("reset");
-    var playerboard = document.getElementById("join");
 	var scoreboard = document.getElementById("score");
     var notification = document.getElementById("notification");
 
-    //var username = "" || "chasezimmy";
-    var username = prompt("username", "Username");
     var uuid = socket.id;
-    var player = {};
-    
-    player[socket.id] = {username: username, room: ''};
 
-	canvas.width = 700;
-	canvas.height = 500;
+	gameboard.width = 700;
+	gameboard.height = 500;
+
+    // Grab username
+    modal_save.onclick = function() {
+        var username = document.getElementById("username");
+        if (username.value.length) {
+            $("#modal_save").modal('hide');
+        }
+    }
+
+
+
 
     /* Initiating new players */
-    pencil = new Pencil(document.getElementById('myCanvas'), {
+    pencil = new Pencil(gameboard, {
         pixelSize: 10,
         id: socket.id,
         socket: socket,
 
     });
-
-
-
 
 	colorNames = {
 					"#28a745" : {
@@ -54,12 +70,7 @@ window.onload = function () {
 						"name": "orange",
 						"score": 0,
                         "username": '',
-					},
-                    "#000" : {
-                        "name": null,
-                        "score": 0,
-                        "username": '',
-                    }
+					}
 				}
 
     clear.onclick = function() {
@@ -67,7 +78,7 @@ window.onload = function () {
     };
 
     reset.onclick = function() {
-        socket.emit('reset', player);
+        socket.emit('reset');
     };
 
 
@@ -83,14 +94,12 @@ window.onload = function () {
 
         sid.innerHTML = "ID: " + socket.id;
         
-        //player[socket.id] = { username : username, room : data['room'] };
-        //console.log(player)
         pencil.enable();
 
     });
 
     socket.on('notification_join', function(data) {
-        notification.append(data.username + " has joined.\n");
+        notification.append(data.username + " has joined as " + colorNames[data.color].name + ".\n");
     });
 
     socket.on('notification_disconnect', function(data) {
@@ -152,6 +161,44 @@ window.onload = function () {
         scoreboard.style.color = maxColor;
 
     });
+
+
+
+
+
+
+    var messages = [];
+    var field = document.getElementById("field");
+    var sendButton = document.getElementById("send");
+    var content = document.getElementById("content");
+
+
+
+        socket.on('message', function (data) {
+        if(data.message) {
+
+            messages.push(data);
+            var html = '';
+            for (var i=0; i<messages.length; i++) {
+                //console.log(messages[i].username.length !=0 );
+                html += '<b>' + (messages[i].username.length !=0 ? messages[i].username + ': ' : '') + '</b>';
+                html += messages[i].message + '<br />';
+            }
+            content.innerHTML = html;
+        } else {
+            console.log("There is a problem:", data);
+        }
+    });
+
+    sendButton.onclick = function() {
+        if (username.value == "") {
+            alert("Please type your name!");
+        } else {
+            var text = field.value;
+            socket.emit('send', { message: text , username: username.value});
+            //field.value = "";
+        }
+    };
 
 
 }
